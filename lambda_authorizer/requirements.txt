@@ -1,0 +1,3 @@
+#flask # For local porposes
+boto3
+pydantic

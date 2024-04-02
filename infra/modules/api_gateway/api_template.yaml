@@ -1,0 +1,89 @@
+openapi: 3.0.3
+
+info:
+  title: Finances app API
+  description: API defining the operations available in the Finances app
+  version: 1.0
+
+paths:
+  /login:
+    post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-auth"
+  /register:
+    post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-auth"
+  /logout:
+    post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-auth"
+  /despesas_futuras:
+    get:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-dashboard"
+      security:
+        - session_authorizer: []
+  /tipos_pagamentos:
+    get:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+  /tipos_pagamentos/{tipo_pagamento_id}:
+    put:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+  /despesas:
+    get:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+    post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+components:
+  securitySchemes:
+    session_authorizer:
+      type: "apiKey"
+      name: "Cookie"
+      in: "header"
+      x-amazon-apigateway-authorizer:
+        identitySource: "$request.header.Cookie"
+        authorizerUri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_authorizer_invoke_arn}"
+        authorizerCredentials: "${execution_role}"
+        authorizerPayloadFormatVersion: "2.0"
+        authorizerResultTtlInSeconds: 1
+        type: "request"
+        enableSimpleResponses: true
+
+  x-amazon-apigateway-integrations:
+    lambda-dashboard:
+      type: "aws_proxy"
+      httpMethod: "POST"
+      credentials: "${execution_role}"
+      uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:sa-east-1:${aws_account_id}:function:lambda-dashboard/invocations"
+      passthroughBehavior: "when_no_match"
+      timeoutInMillis: 29000
+      payloadFormatVersion: 2.0
+    lambda-api-handler:
+      type: "aws_proxy"
+      httpMethod: "POST"
+      credentials: "${execution_role}"
+      uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:sa-east-1:${aws_account_id}:function:lambda-api-handler/invocations"
+      passthroughBehavior: "when_no_match"
+      timeoutInMillis: 29000
+      payloadFormatVersion: 2.0
+    lambda-auth:
+      type: "aws_proxy"
+      httpMethod: "POST"
+      credentials: "${execution_role}"
+      uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:sa-east-1:${aws_account_id}:function:lambda-auth/invocations"
+      passthroughBehavior: "when_no_match"
+      timeoutInMillis: 29000
+      payloadFormatVersion: 2.0
