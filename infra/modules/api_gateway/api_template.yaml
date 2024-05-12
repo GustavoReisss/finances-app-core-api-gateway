@@ -36,6 +36,11 @@ paths:
         $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
       security:
         - session_authorizer: []
+    delete:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
   /despesas:
     get:
       x-amazon-apigateway-integration:
@@ -47,6 +52,18 @@ paths:
         $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
       security:
         - session_authorizer: []
+  /despesas/{despesa_id}:
+    delete:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+    put:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+
 components:
   securitySchemes:
     session_authorizer:
