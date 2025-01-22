@@ -15,5 +15,4 @@ data "template_file" "api_template" {
     aws_account_id = data.aws_caller_identity.current.account_id
     lambda_authorizer_invoke_arn = var.lambda_authorizer_invoke_arn
   }
-
 }

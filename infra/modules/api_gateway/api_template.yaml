@@ -64,6 +64,25 @@ paths:
       security:
         - session_authorizer: []
 
+  /upload_b3:
+    post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-upload-b3"
+      security:
+        - session_authorizer: []
+
+  /extrato_despesas:
+    get:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+    post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/lambda-api-handler"
+      security:
+        - session_authorizer: []
+
 components:
   securitySchemes:
     session_authorizer:
@@ -101,6 +120,14 @@ components:
       httpMethod: "POST"
       credentials: "${execution_role}"
       uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:sa-east-1:${aws_account_id}:function:lambda-auth/invocations"
+      passthroughBehavior: "when_no_match"
+      timeoutInMillis: 29000
+      payloadFormatVersion: 2.0
+    lambda-upload-b3:
+      type: "aws_proxy"
+      httpMethod: "POST"
+      credentials: "${execution_role}"
+      uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:sa-east-1:${aws_account_id}:function:lambda-upload-b3/invocations"
       passthroughBehavior: "when_no_match"
       timeoutInMillis: 29000
       payloadFormatVersion: 2.0
